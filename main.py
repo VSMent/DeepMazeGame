@@ -6,19 +6,20 @@ pygame.init()
 
 # variables
 # Get real screen resolution 
+# TODO: get best resolution for real screen
 # screenInfo = pygame.display.Info()
 # realScreenWidth=screenInfo.current_w
-# realScreenHeight=screenInfo.current_h
-# TODO: get best resolution for real screen
-display_height = 900
-display_width = 1600
-sidebarWidth = round(display_width * .2)
-rightSeparator = display_width - sidebarWidth
+# gameFullWidth = realScreenWidth
+# gameFullWidth = 1600
+gameFullWidth = 1366
+gameHeight = int(round(gameFullWidth * 9/16))
+sidebarWidth = int(round(gameFullWidth * .2))
+gameWidth = gameFullWidth - sidebarWidth
 
 black = (0,0,0)
 white = (255,255,255)
 
-gameDisplay = pygame.display.set_mode((display_width,display_height))
+gameDisplay = pygame.display.set_mode((gameFullWidth,gameHeight))
 pygame.display.set_caption('Deep Maze!')
 clock = pygame.time.Clock()
 
@@ -37,7 +38,7 @@ def text_objects(text,font):
 def displayMessage(text):
   largeText = pygame.font.Font('freesansbold.ttf',115)
   TextSurf, TextRect = text_objects(text, largeText)
-  TextRect.center = ((display_width/2),(display_height/2))
+  TextRect.center = ((gameWidth/2),(gameHeight/2))
   gameDisplay.blit(TextSurf,TextRect)
   pygame.display.update()
   time.sleep(2)
@@ -59,7 +60,7 @@ def gameLoop():
            
     gameDisplay.fill(white)
     # showPlayer(playerX,playerY)
-    pygame.draw.rect(gameDisplay,black,pygame.Rect(rightSeparator,0,sidebarWidth,display_height),0)
+    pygame.draw.rect(gameDisplay,black,pygame.Rect(gameWidth,0,sidebarWidth,gameHeight),0)
     pygame.display.update() # update specific thing if specified or whole screen
     clock.tick(60)
 
