@@ -6,21 +6,19 @@ pygame.init()
 
 # variables
 # Get real screen resolution 
-screenInfo = pygame.display.Info()
-realW=screenInfo.current_w
-realH=screenInfo.current_h
+# screenInfo = pygame.display.Info()
+# realScreenWidth=screenInfo.current_w
+# realScreenHeight=screenInfo.current_h
 # TODO: get best resolution for real screen
-# TODO: handle resize events (update resolution)
-display_width = 800
-display_height = 600
-difference = max(display_height,display_width) - min(display_height,display_width)
+display_height = 900
+display_width = 1600
+sidebarWidth = round(display_width * .2)
+rightSeparator = display_width - sidebarWidth
 
 black = (0,0,0)
 white = (255,255,255)
 
-
-
-gameDisplay = pygame.display.set_mode((display_width,display_height),pygame.RESIZABLE)
+gameDisplay = pygame.display.set_mode((display_width,display_height))
 pygame.display.set_caption('Deep Maze!')
 clock = pygame.time.Clock()
 
@@ -61,7 +59,7 @@ def gameLoop():
            
     gameDisplay.fill(white)
     # showPlayer(playerX,playerY)
-    pygame.draw.rect(gameDisplay,black,pygame.Rect(display_width - difference,0,difference,display_height),0)
+    pygame.draw.rect(gameDisplay,black,pygame.Rect(rightSeparator,0,sidebarWidth,display_height),0)
     pygame.display.update() # update specific thing if specified or whole screen
     clock.tick(60)
 
