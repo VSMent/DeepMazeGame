@@ -3,14 +3,24 @@ import pygame
 import time
 pygame.init()
 
-#variables
+
+# variables
+# Get real screen resolution 
+screenInfo = pygame.display.Info()
+realW=screenInfo.current_w
+realH=screenInfo.current_h
+# TODO: get best resolution for real screen
+# TODO: handle resize events (update resolution)
 display_width = 800
 display_height = 600
+difference = max(display_height,display_width) - min(display_height,display_width)
 
 black = (0,0,0)
 white = (255,255,255)
 
-gameDisplay = pygame.display.set_mode((display_width,display_height))
+
+
+gameDisplay = pygame.display.set_mode((display_width,display_height),pygame.RESIZABLE)
 pygame.display.set_caption('Deep Maze!')
 clock = pygame.time.Clock()
 
@@ -40,11 +50,6 @@ def end():
 
 def gameLoop():
   # variables
-  playerX = (display_width * 0.45)
-  playerY = (display_height * 0.8)
-  dx = 0
-  dy = 0
-
   gameExit = False
   # main loop
   while not gameExit:
@@ -53,39 +58,10 @@ def gameLoop():
       if event.type == pygame.QUIT:
         pygame.quit()
         quit()
-      
-      keys = pygame.key.get_pressed()
-      # move player
-      # X axis
-      if keys[pygame.K_LEFT]:
-        dx = -5
-      if keys[pygame.K_RIGHT]:
-        dx = 5
-          
-      # Y axis
-      if keys[pygame.K_UP]:
-        dy = -5
-      if keys[pygame.K_DOWN]:
-        dy = 5
-
-      # stop location change
-      # X axis
-      if (keys[pygame.K_LEFT] and keys[pygame.K_RIGHT]) or (not keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT]):
-        dx = 0
-      # Y axis
-      if (keys[pygame.K_UP] and keys[pygame.K_DOWN]) or (not keys[pygame.K_UP] and not keys[pygame.K_DOWN]):
-        dy = 0
-      
-    playerX += dx
-    playerY += dy
-
+           
     gameDisplay.fill(white)
-    if playerX < 0 or playerX > display_width - playerWidth:
-      end()
-    if playerY < 0 or playerY > display_height - playerHeight:
-      end()
-    showPlayer(playerX,playerY)
-
+    # showPlayer(playerX,playerY)
+    pygame.draw.rect(gameDisplay,black,pygame.Rect(display_width - difference,0,difference,display_height),0)
     pygame.display.update() # update specific thing if specified or whole screen
     clock.tick(60)
 
