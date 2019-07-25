@@ -1,5 +1,6 @@
 # imports, init
 import pygame
+import time
 pygame.init()
 
 #variables
@@ -21,6 +22,22 @@ playerHeight = 110
 def showPlayer(x,y):
   gameDisplay.blit(playerImg,(x,y)) # draw image
 
+def text_objects(text,font):
+  textSurface = font.render(text, True, black)
+  return textSurface, textSurface.get_rect()
+
+def displayMessage(text):
+  largeText = pygame.font.Font('freesansbold.ttf',115)
+  TextSurf, TextRect = text_objects(text, largeText)
+  TextRect.center = ((display_width/2),(display_height/2))
+  gameDisplay.blit(TextSurf,TextRect)
+  pygame.display.update()
+  time.sleep(2)
+  gameLoop()
+
+def end():
+  displayMessage('The end!')  
+
 def gameLoop():
   # variables
   playerX = (display_width * 0.45)
@@ -34,7 +51,8 @@ def gameLoop():
     for event in pygame.event.get():
       # print(event) # DEBUG
       if event.type == pygame.QUIT:
-        gameExit = True
+        pygame.quit()
+        quit()
       
       keys = pygame.key.get_pressed()
       # move player
@@ -63,9 +81,9 @@ def gameLoop():
 
     gameDisplay.fill(white)
     if playerX < 0 or playerX > display_width - playerWidth:
-      gameExit = True
+      end()
     if playerY < 0 or playerY > display_height - playerHeight:
-      gameExit = True
+      end()
     showPlayer(playerX,playerY)
 
     pygame.display.update() # update specific thing if specified or whole screen
