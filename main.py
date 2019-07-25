@@ -49,6 +49,10 @@ def end():
 
 def gameLoop():
   # variables
+  playerX = (gameWidth * 0.45)
+  playerY = (gameHeight * 0.8)
+  dx = 0
+  dy = 0
   gameExit = False
   # main loop
   while not gameExit:
@@ -57,9 +61,38 @@ def gameLoop():
       if event.type == pygame.QUIT:
         pygame.quit()
         quit()
+
+      keys = pygame.key.get_pressed()
+      # move player
+      # X axis
+      if keys[pygame.K_LEFT]:
+        dx = -5
+      if keys[pygame.K_RIGHT]:
+        dx = 5
+
+      # Y axis
+      if keys[pygame.K_UP]:
+        dy = -5
+      if keys[pygame.K_DOWN]:
+        dy = 5
+
+      # stop location change
+      # X axis
+      if (keys[pygame.K_LEFT] and keys[pygame.K_RIGHT]) or (not keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT]):
+        dx = 0
+      # Y axis
+      if (keys[pygame.K_UP] and keys[pygame.K_DOWN]) or (not keys[pygame.K_UP] and not keys[pygame.K_DOWN]):
+        dy = 0
+
+    playerX += dx
+    playerY += dy
            
     gameDisplay.fill(white)
-    # showPlayer(playerX,playerY)
+    if playerX < 0 or playerX > gameWidth - playerWidth:
+      end()
+    if playerY < 0 or playerY > gameHeight - playerHeight:
+      end()
+    showPlayer(playerX,playerY)
     pygame.draw.rect(gameDisplay,black,pygame.Rect(gameWidth,0,sidebarWidth,gameHeight),0)
     pygame.display.update() # update specific thing if specified or whole screen
     clock.tick(60)
