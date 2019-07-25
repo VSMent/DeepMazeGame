@@ -21,16 +21,47 @@ def showPlayer(x,y):
 
 playerX = (display_width * 0.45)
 playerY = (display_height * 0.8)
-
+dx = 0
+dy = 0
 
 
 isEnd = False
 # main loop
 while not isEnd:
   for event in pygame.event.get():
+    # print(event) # DEBUG
     if event.type == pygame.QUIT:
       isEnd = True
-    # print(event) # DEBUG
+    
+    keys = pygame.key.get_pressed()
+
+    # X axe
+    if keys[pygame.K_LEFT]:
+      dx = -5
+    if keys[pygame.K_RIGHT]:
+      dx = 5
+        
+    # Y axe
+    if keys[pygame.K_UP]:
+      dy = -5
+    if keys[pygame.K_DOWN]:
+      dy = 5
+
+    # stop location change
+    # X axe
+    if (keys[pygame.K_LEFT] and keys[pygame.K_RIGHT]) or (not keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT]):
+      dx = 0
+    # Y axe
+    if (keys[pygame.K_UP] and keys[pygame.K_DOWN]) or (not keys[pygame.K_UP] and not keys[pygame.K_DOWN]):
+      dy = 0
+    
+
+
+
+
+  playerX += dx
+  playerY += dy
+
   gameDisplay.fill(white)
   showPlayer(playerX,playerY)
 
