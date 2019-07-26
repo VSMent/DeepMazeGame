@@ -7,11 +7,11 @@ pygame.init()
 # variables
 # Get real screen resolution 
 # TODO: get best resolution for real screen
-# screenInfo = pygame.display.Info()
-# realScreenWidth=screenInfo.current_w
-# gameFullWidth = realScreenWidth
+screenInfo = pygame.display.Info()
+realScreenWidth=screenInfo.current_w
+gameFullWidth = realScreenWidth - 200
 # gameFullWidth = 1600
-gameFullWidth = 1366
+# gameFullWidth = 1366
 gameHeight = int(round(gameFullWidth * 9/16))
 sidebarWidth = int(round(gameFullWidth * .2))
 gameWidth = gameFullWidth - sidebarWidth
