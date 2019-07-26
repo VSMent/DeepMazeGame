@@ -3,34 +3,44 @@ import pygame
 import time
 pygame.init()
 
-
 # variables
 # Get real screen resolution 
 # TODO: get best resolution for real screen
 screenInfo = pygame.display.Info()
-realScreenWidth=screenInfo.current_w
+realScreenWidth = screenInfo.current_w
 gameFullWidth = realScreenWidth - 200
 # gameFullWidth = 1600 - 200
 # gameFullWidth = 1366 - 200
 # gameFullWidth = 1280 - 200
 gameHeight = int(round(gameFullWidth * 9/16))
-sidebarWidth = int(round(gameFullWidth * .2))
+sidebarWidth = int(round(gameFullWidth * .25))
 gameWidth = gameFullWidth - sidebarWidth
+
+playerSpeed = gameWidth/180
+cols = 10
+rows = 9
+blockSize = gameWidth/cols
+print(blockSize)
 
 black = (0,0,0)
 white = (255,255,255)
 
+# gameDisplay = pygame.display.set_mode((gameFullWidth,gameHeight),pygame.FULLSCREEN)
 gameDisplay = pygame.display.set_mode((gameFullWidth,gameHeight))
 pygame.display.set_caption('Deep Maze!')
 clock = pygame.time.Clock()
 
-playerImg = pygame.image.load("sprites/hero/idleA/hero_idleA_0000.png") # w:100 h:110 
-playerWidth = 100
-playerHeight = 110
+playerWidth = int(round(blockSize/1.1))
+playerHeight = blockSize
+playerImg = pygame.transform.scale(pygame.image.load("sprites/main-pack/hero/idleA/hero_idleA_0000.png"),(playerWidth,playerHeight)) # w:100 h:110 
+# chestImg = pygame.transform.scale(pygame.image.load("sprites/treasure chest/chest1_128.png"),(int(blockSize*.8),int(blockSize*.8))) # w:100 h:110 
 
 #code
 def showPlayer(x,y):
   gameDisplay.blit(playerImg,(x,y)) # draw image
+
+def drawImage(image,x,y):
+  gameDisplay.blit(image,(x,y)) # draw image
 
 def text_objects(text,font):
   textSurface = font.render(text, True, black)
@@ -67,15 +77,15 @@ def gameLoop():
       # move player
       # X axis
       if keys[pygame.K_LEFT]:
-        dx = -5
+        dx = -playerSpeed
       if keys[pygame.K_RIGHT]:
-        dx = 5
+        dx = playerSpeed
 
       # Y axis
       if keys[pygame.K_UP]:
-        dy = -5
+        dy = -playerSpeed
       if keys[pygame.K_DOWN]:
-        dy = 5
+        dy = playerSpeed
 
       # stop location change
       # X axis
@@ -94,6 +104,7 @@ def gameLoop():
     if playerY < 0 or playerY > gameHeight - playerHeight:
       end()
     showPlayer(playerX,playerY)
+    # drawImage(chestImg,0,0)
     pygame.draw.rect(gameDisplay,black,pygame.Rect(gameWidth,0,sidebarWidth,gameHeight),0)
     pygame.display.update() # update specific thing if specified or whole screen
     clock.tick(60)

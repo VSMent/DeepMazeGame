@@ -102,3 +102,13 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# not the best sprites
+/sprites/nope
+/sprites/nope2
+/sprites/wk
+/sprites/nature_tileset_without_gaps
+
+# system files
+.DS_Store
+Thumbs.db
