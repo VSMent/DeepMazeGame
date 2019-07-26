@@ -17,7 +17,7 @@ sidebarWidth = int(round(gameFullWidth * .25))
 gameWidth = gameFullWidth - sidebarWidth
 
 playerSpeed = gameWidth/180
-cols = 10
+cols = 12
 rows = 9
 blockSize = gameWidth/cols
 print(blockSize)
@@ -30,10 +30,11 @@ gameDisplay = pygame.display.set_mode((gameFullWidth,gameHeight))
 pygame.display.set_caption('Deep Maze!')
 clock = pygame.time.Clock()
 
-playerWidth = int(round(blockSize/1.1))
+playerWidth = int(round(blockSize/1.29))
 playerHeight = blockSize
-playerImg = pygame.transform.scale(pygame.image.load("sprites/main-pack/hero/idleA/hero_idleA_0000.png"),(playerWidth,playerHeight)) # w:100 h:110 
+playerImg = pygame.transform.smoothscale(pygame.image.load("sprites/main-pack/hero/idleA/hero_idleA_0000.png").subsurface(20,21,62,80),(playerWidth,playerHeight))
 # chestImg = pygame.transform.scale(pygame.image.load("sprites/treasure chest/chest1_128.png"),(int(blockSize*.8),int(blockSize*.8))) # w:100 h:110 
+chestImg = pygame.transform.scale(pygame.image.load("sprites/wk/loot05key.png"),(int(blockSize*1),int(blockSize*1))) # w:100 h:110 
 
 #code
 def showPlayer(x,y):
@@ -41,6 +42,12 @@ def showPlayer(x,y):
 
 def drawImage(image,x,y):
   gameDisplay.blit(image,(x,y)) # draw image
+
+def drawGrid():
+  for col in xrange(1,cols):
+    pygame.draw.line(gameDisplay,black,(col*blockSize,0),(col*blockSize,gameHeight),1)
+  for row in xrange(1,rows):
+    pygame.draw.line(gameDisplay,black,(0,row*blockSize),(gameWidth,row*blockSize),1)
 
 def text_objects(text,font):
   textSurface = font.render(text, True, black)
@@ -103,8 +110,9 @@ def gameLoop():
       end()
     if playerY < 0 or playerY > gameHeight - playerHeight:
       end()
+    drawGrid()
+    drawImage(chestImg,0,0)
     showPlayer(playerX,playerY)
-    # drawImage(chestImg,0,0)
     pygame.draw.rect(gameDisplay,black,pygame.Rect(gameWidth,0,sidebarWidth,gameHeight),0)
     pygame.display.update() # update specific thing if specified or whole screen
     clock.tick(60)
