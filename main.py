@@ -10,8 +10,9 @@ pygame.init()
 screenInfo = pygame.display.Info()
 realScreenWidth=screenInfo.current_w
 gameFullWidth = realScreenWidth - 200
-# gameFullWidth = 1600
-# gameFullWidth = 1366
+# gameFullWidth = 1600 - 200
+# gameFullWidth = 1366 - 200
+# gameFullWidth = 1280 - 200
 gameHeight = int(round(gameFullWidth * 9/16))
 sidebarWidth = int(round(gameFullWidth * .2))
 gameWidth = gameFullWidth - sidebarWidth
