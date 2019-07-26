@@ -20,7 +20,9 @@ playerSpeed = gameWidth/180
 cols = 12
 rows = 9
 blockSize = gameWidth/cols
-print(blockSize)
+
+startX = (gameWidth - (blockSize * cols)) / 2
+startY = (gameHeight - (blockSize * rows)) / 2
 
 black = (0,0,0)
 white = (255,255,255)
@@ -33,21 +35,33 @@ clock = pygame.time.Clock()
 playerWidth = int(round(blockSize/1.29))
 playerHeight = blockSize
 playerImg = pygame.transform.smoothscale(pygame.image.load("sprites/main-pack/hero/idleA/hero_idleA_0000.png").subsurface(20,21,62,80),(playerWidth,playerHeight))
-# chestImg = pygame.transform.scale(pygame.image.load("sprites/treasure chest/chest1_128.png"),(int(blockSize*.8),int(blockSize*.8))) # w:100 h:110 
-chestImg = pygame.transform.scale(pygame.image.load("sprites/wk/loot05key.png"),(int(blockSize*1),int(blockSize*1))) # w:100 h:110 
+chestImg = pygame.transform.scale(pygame.image.load("sprites/treasure chest/chest1_128.png"),(int(blockSize*.8),int(blockSize*.8))) # w:100 h:110 
+# chestImg = pygame.transform.scale(pygame.image.load("sprites/wk/loot05key.png"),(int(blockSize*1),int(blockSize*1))) # w:100 h:110 
+# bgBlockImg = pygame.image.load("sprites/main-pack/level/groundEarth_checkered.png")
+bgBlockImg = pygame.transform.smoothscale(pygame.image.load("sprites/main-pack/level/groundEarth_checkered.png").subsurface(0,0,69,52),(blockSize,blockSize))
 
 #code
 def showPlayer(x,y):
   gameDisplay.blit(playerImg,(x,y)) # draw image
 
-def drawImage(image,x,y):
-  gameDisplay.blit(image,(x,y)) # draw image
+def drawImage(image,x,y,centered=False):
+  if not centered:
+    gameDisplay.blit(image,(x,y))
+  else:
+    offsetX = abs((blockSize - image.get_width()) / 2)
+    offsetY = abs((blockSize - image.get_height()) / 2)
+    gameDisplay.blit(image,(x+offsetX,y+offsetY))
 
 def drawGrid():
   for col in xrange(1,cols):
-    pygame.draw.line(gameDisplay,black,(col*blockSize,0),(col*blockSize,gameHeight),1)
+    pygame.draw.line(gameDisplay,black,(col*blockSize,startY),(col*blockSize,gameHeight),1)
   for row in xrange(1,rows):
-    pygame.draw.line(gameDisplay,black,(0,row*blockSize),(gameWidth,row*blockSize),1)
+    pygame.draw.line(gameDisplay,black,(startX,row*blockSize),(gameWidth,row*blockSize),1)
+
+def drawBG():
+  for col in xrange(0,cols):
+    for row in xrange(0,rows):
+      gameDisplay.blit(bgBlockImg,(col*blockSize+startX,row*blockSize+startY))
 
 def text_objects(text,font):
   textSurface = font.render(text, True, black)
@@ -106,12 +120,13 @@ def gameLoop():
     playerY += dy
            
     gameDisplay.fill(white)
-    if playerX < 0 or playerX > gameWidth - playerWidth:
-      end()
-    if playerY < 0 or playerY > gameHeight - playerHeight:
-      end()
-    drawGrid()
-    drawImage(chestImg,0,0)
+    # if playerX < 0 or playerX > gameWidth - playerWidth:
+    #   end()
+    # if playerY < 0 or playerY > gameHeight - playerHeight:
+    #   end()
+    drawBG()
+    # drawGrid()
+    drawImage(chestImg,startX,startY,True)
     showPlayer(playerX,playerY)
     pygame.draw.rect(gameDisplay,black,pygame.Rect(gameWidth,0,sidebarWidth,gameHeight),0)
     pygame.display.update() # update specific thing if specified or whole screen
