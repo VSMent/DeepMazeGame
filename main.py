@@ -19,11 +19,14 @@ gameWidth = gameFullWidth - sidebarWidth
 
 playerSpeed = gameWidth / 180
 cols = 12
-rows = 9
+rows = 7
+gridRows = 9
 blockSize = gameWidth / cols
 
-startX = (gameWidth - (blockSize * cols)) / 2
-startY = (gameHeight - (blockSize * rows)) / 2
+# startX = (gameWidth - (blockSize * cols)) / 2
+# startY = (gameHeight - (blockSize * rows)) / 2
+startX = 0
+startY = 0
 
 black = (0, 0, 0)
 white = (255, 255, 255)
@@ -35,16 +38,19 @@ clock = pygame.time.Clock()
 
 playerWidth = int(round(blockSize / 1.29))
 playerHeight = blockSize
-playerImg = pygame.transform.smoothscale(
+playerImg = pygame.transform.scale(
     pygame.image.load("sprites/main-pack/hero/idleA/hero_idleA_0000.png").subsurface(20, 21, 62, 80),
     (playerWidth, playerHeight))
 chestImg = pygame.transform.scale(pygame.image.load("sprites/treasure chest/chest1_128.png"),
                                   (int(blockSize * .8), int(blockSize * .8)))  # w:100 h:110
 # chestImg = pygame.transform.scale(pygame.image.load("sprites/wk/loot05key.png"),(int(blockSize*1),int(blockSize*1))) # w:100 h:110
 # bgBlockImg = pygame.image.load("sprites/main-pack/level/groundEarth_checkered.png")
-bgBlockImg = pygame.transform.smoothscale(
-    pygame.image.load("sprites/main-pack/level/groundEarth_checkered.png").subsurface(0, 0, 69, 52),
-    (blockSize, blockSize))
+bgBlockImg = pygame.transform.scale(
+    pygame.image.load("sprites/main-pack/level/groundEarth_checkered_7x10.png"),
+    (blockSize, blockSize*2))
+wallBlockImg = pygame.transform.scale(
+    pygame.image.load("sprites/main-pack/level/wallBreakable_7x10.png"),
+    (blockSize, int(blockSize*1.5)))
 
 
 # code
@@ -64,13 +70,13 @@ def drawImage(image, x, y, centered=False):
 def drawGrid():
     for col in xrange(1, cols):
         pygame.draw.line(gameDisplay, black, (col * blockSize, startY), (col * blockSize, gameHeight), 1)
-    for row in xrange(1, rows):
+    for row in xrange(1, gridRows):
         pygame.draw.line(gameDisplay, black, (startX, row * blockSize), (gameWidth, row * blockSize), 1)
 
 
 def drawBG():
     for col in xrange(0, cols):
-        for row in xrange(0, rows):
+        for row in xrange(1, rows+1):
             gameDisplay.blit(bgBlockImg, (col * blockSize + startX, row * blockSize + startY))
 
 
@@ -139,9 +145,10 @@ def gameLoop():
         # if playerY < 0 or playerY > gameHeight - playerHeight:
         #   end()
         drawBG()
-        # drawGrid()
-        drawImage(chestImg, startX, startY, True)
+        drawGrid()
         showPlayer(playerX, playerY)
+        gameDisplay.blit(wallBlockImg, (1 * blockSize + startX, 4.5 * blockSize + startY))
+        drawImage(chestImg,  1 * blockSize + startX, 1 * blockSize + startY, True)
         pygame.draw.rect(gameDisplay, black, pygame.Rect(gameWidth, 0, sidebarWidth, gameHeight), 0)
         pygame.display.update()  # update specific thing if specified or whole screen
         clock.tick(60)
