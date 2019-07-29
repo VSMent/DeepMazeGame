@@ -6,7 +6,6 @@ pygame.init()
 
 # variables
 # Get real screen resolution 
-# TODO: get best resolution for real screen
 screenInfo = pygame.display.Info()
 realScreenWidth = screenInfo.current_w
 gameFullWidth = realScreenWidth - 160
@@ -20,8 +19,11 @@ gameWidth = gameFullWidth - sidebarWidth
 playerSpeed = gameWidth / 180
 cols = 12
 rows = 7
-gridRows = 9
+gridRows = rows+2
 blockSize = gameWidth / cols
+
+grid = [[None]*cols]*rows
+print(grid)
 
 # startX = (gameWidth - (blockSize * cols)) / 2
 # startY = (gameHeight - (blockSize * rows)) / 2
@@ -30,6 +32,7 @@ startY = 0
 
 black = (0, 0, 0)
 white = (255, 255, 255)
+lightGreen = (221, 255, 124)
 
 # gameDisplay = pygame.display.set_mode((gameFullWidth,gameHeight),pygame.FULLSCREEN)
 gameDisplay = pygame.display.set_mode((gameFullWidth, gameHeight))
@@ -51,6 +54,9 @@ bgBlockImg = pygame.transform.scale(
 wallBlockImg = pygame.transform.scale(
     pygame.image.load("sprites/main-pack/level/wallBreakable_7x10.png"),
     (blockSize, int(blockSize*1.5)))
+# bgImg = pygame.transform.scale(
+#     pygame.image.load("sprites/bg.jpg"),
+#     (gameWidth, gameHeight))
 
 
 # code
@@ -139,11 +145,12 @@ def gameLoop():
         playerX += dx
         playerY += dy
 
-        gameDisplay.fill(white)
+        # gameDisplay.fill(white)
         # if playerX < 0 or playerX > gameWidth - playerWidth:
         #   end()
         # if playerY < 0 or playerY > gameHeight - playerHeight:
         #   end()
+        gameDisplay.fill(lightGreen)
         drawBG()
         drawGrid()
         showPlayer(playerX, playerY)
