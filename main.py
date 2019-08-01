@@ -36,7 +36,7 @@ blockSize = gameWidth / cols  # block size = max size of each element in game
 
 playerSpeed = gameWidth / 180 # how much pixels should player move
 
-grid = [[None]*cols]*rows
+grid = [ [ None for i in range(cols) ] for j in range(rows) ]
 grid[0][0] = 1
 
 print('\n'.join([''.join(['{:5}'.format(item) for item in row])
