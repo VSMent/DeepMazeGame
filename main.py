@@ -36,11 +36,11 @@ blockSize = gameWidth / cols  # block size = max size of each element in game
 
 playerSpeed = gameWidth / 180 # how much pixels should player move
 
-grid = [ [ None for i in range(cols) ] for j in range(rows) ]
-grid[0][0] = 1
+maze = [ [ 1 if i == 0 or i == cols-1 or j == 0 or j == rows-1 else None for i in range(cols) ] for j in range(rows) ]
+# grid[0][0] = 1
 
 print('\n'.join([''.join(['{:5}'.format(item) for item in row])
-                 for row in grid]))
+                 for row in maze]))
 
 
 black = (0, 0, 0)
@@ -53,8 +53,8 @@ gameDisplay = pygame.display.set_mode((gameFullWidth, gameFullHeight))
 pygame.display.set_caption('Deep Maze!')
 clock = pygame.time.Clock()
 
-playerWidth = int(round(blockSize / 1.29))
-playerHeight = blockSize
+playerWidth = int(round(blockSize / 1.29 / 1.3))
+playerHeight = int(round(blockSize / 1.3))
 playerImg = pygame.transform.scale(
   pygame.image.load("sprites/main-pack/hero/idleA/hero_idleA_0000.png").subsurface(20, 21, 62, 80),
   (playerWidth, playerHeight))
@@ -106,7 +106,7 @@ def drawFloor():
 def drawMaze():
   for i in range(rows):
     for j in range(cols):
-      if grid[i][j] == 1:
+      if maze[i][j] == 1:
         drawImage(wallBlockImg, j * blockSize, i * blockSize)
 
 
@@ -171,15 +171,15 @@ def gameLoop():
     playerY += dy
 
     # gameDisplay.fill(white)
-    # if playerX < 0 or playerX > gameWidth - playerWidth:
+    # if playerX < offsetH1 or playerX > gameWidth - playerWidth:
     #   end()
-    # if playerY < 0 or playerY > gameHeight - playerHeight:
+    # if playerY < offsetV1 or playerY > gameHeight - playerHeight:
     #   end()
     gameDisplay.fill(lightGreen)
     drawFloor()
+    showPlayer(playerX, playerY)
     drawMaze()
     drawGrid()
-    showPlayer(playerX, playerY)
     # drawImage(wallBlockImg, 1 * blockSize, 4 * blockSize)
     # drawImage(wallBlockImg, 1 * blockSize, math.ceil(5 * blockSize))
     # drawImage(wallBlockImg, 2 * blockSize, math.ceil(4 * blockSize))
