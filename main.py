@@ -5,6 +5,14 @@ import math
 
 pygame.init()
 
+# version check
+try:
+  # Python 2
+  xrange
+except NameError:
+  # Python 3
+  xrange = range
+
 # variables
 # Get real screen resolution 
 screenInfo = pygame.display.Info()  # get current screen info
