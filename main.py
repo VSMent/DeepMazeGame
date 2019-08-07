@@ -64,7 +64,7 @@ chestImg = pygame.transform.scale(pygame.image.load("sprites/treasure chest/ches
 # floorBlockImg = pygame.image.load("sprites/main-pack/level/groundEarth_checkered.png")
 floorBlockImg = pygame.transform.scale(
   pygame.image.load("sprites/main-pack/level/groundEarth_checkered_7x10.png"),
-  (blockSize, blockSize*2))
+  (blockSize, int(blockSize*2)))
 wallBlockImg = pygame.transform.scale(
   pygame.image.load("sprites/main-pack/level/wallBreakable_7x5+.png"),
   (int(blockSize*1), int(blockSize*1.5)))
