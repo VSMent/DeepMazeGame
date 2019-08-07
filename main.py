@@ -77,11 +77,12 @@ wallBlockImg = pygame.transform.scale(
 def showPlayer(x, y):
   drawImage(playerImg,x,y,True)
 
-def drawImage(image, x_, y_, centered=False):
-  y,x = y_,x_
-  if image == wallBlockImg:
+def drawImage(image, x, y, centered=False):
+  # Wall
+  if image == wallBlockImg: 
     y += (math.ceil(float(wallBlockImg.get_height()) / float(blockSize)) - (
       float(wallBlockImg.get_height()) / float(blockSize))) * blockSize
+    
   if not centered:
     gameDisplay.blit(image, (x + offsetH1, y + offsetV1))
   else:
