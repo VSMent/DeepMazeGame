@@ -39,7 +39,7 @@ playerSpeed = gameWidth / 180 # how much pixels should player move
 maze = [ [ 1 if i == 0 or i == cols-1 or j == 0 or j == rows-1 else None for i in range(cols) ] for j in range(rows) ]
 # grid[0][0] = 1
 
-print('\n'.join([''.join(['{:5}'.format(item) for item in row])
+print('\n'.join([''.join(['{!s:5}'.format(item) for item in row])
                  for row in maze]))
 
 
@@ -82,7 +82,7 @@ def drawImage(image, x, y, centered=False):
   if image == wallBlockImg: 
     y += (math.ceil(float(wallBlockImg.get_height()) / float(blockSize)) - (
       float(wallBlockImg.get_height()) / float(blockSize))) * blockSize
-    
+
   if not centered:
     gameDisplay.blit(image, (x + offsetH1, y + offsetV1))
   else:
