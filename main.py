@@ -134,33 +134,18 @@ def gameLoop():
     for event in pygame.event.get():
       # print(event) # DEBUG
       if event.type == pygame.QUIT:
-        pygame.quit()
         quit()
 
-      keys = pygame.key.get_pressed()
-      # move player
-      # X axis
-      if keys[pygame.K_LEFT]:
-        dx = -playerSpeed
-      if keys[pygame.K_RIGHT]:
-        dx = playerSpeed
+      if event.type == pygame.KEYDOWN:
+        if event.key == pygame.K_LEFT:
+          playerX += -g.blockSize
+        if event.key == pygame.K_RIGHT:
+          playerX += g.blockSize
+        if event.key == pygame.K_UP:
+          playerY += -g.blockSize
+        if event.key == pygame.K_DOWN:
+          playerY += g.blockSize
 
-      # Y axis
-      if keys[pygame.K_UP]:
-        dy = -playerSpeed
-      if keys[pygame.K_DOWN]:
-        dy = playerSpeed
-
-      # stop location change
-      # X axis
-      if (keys[pygame.K_LEFT] and keys[pygame.K_RIGHT]) or (not keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT]):
-        dx = 0
-      # Y axis
-      if (keys[pygame.K_UP] and keys[pygame.K_DOWN]) or (not keys[pygame.K_UP] and not keys[pygame.K_DOWN]):
-        dy = 0
-
-    playerX += dx
-    playerY += dy
 
     # gameDisplay.fill(white)
     # if playerX < offsetH1 or playerX > gameWidth - playerWidth:
