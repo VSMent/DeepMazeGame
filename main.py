@@ -1,9 +1,16 @@
+"""
+Script for main game logic
+"""
+
 # imports, init
 import pygame
 import time
 import math
+import gameVariables as g
+from maze import Maze
 
-pygame.init()
+# initialize all graphic related variables, pygame stuff
+g.init()
 
 # version check
 try:
@@ -14,41 +21,15 @@ except NameError:
   xrange = range
 
 # variables
-# Get real screen resolution 
-screenInfo = pygame.display.Info()  # get current screen info
-realScreenWidth = screenInfo.current_w  # get width
-gameFullWidth = realScreenWidth - 160   # make some offset from screen borders
-# gameFullWidth = 1600 - 160
-# gameFullWidth = 1366 - 160
-# gameFullWidth = 1280 - 160
-gameFullHeight = gameWithOffsetHeight = int(round(gameFullWidth * 9 / 16))   # height with some small offsets if screen is not 16*9 resolution
-sidebarWidth = int(round(gameFullWidth * .25))  # take 25% (16 * .25 = 4) of game screen for sidebar
-gameWithOffsetWidth = gameFullWidth - sidebarWidth  # leave rest for game screen (there also could be some offsets)
 
-cols = 12   # divide all our 12/16 parts of our game screen for columns
-rows = 7    # vertical resolution is 9 but we need to reserve two layers for bootom and top layer
-gridRows = rows+2   # grid should be drawn for those rows too
+playerSpeed = g.gameWidth / 180 # how much pixels should player move
 
-offsetH1 = (gameWithOffsetWidth % cols) / 2  # count horizontal offset for left side
-offsetH2 = (gameWithOffsetWidth % cols) - offsetH1  # and right too (in case offset should be 3px)
-offsetV1 = (gameWithOffsetHeight % gridRows) / 2 # same for vertical left too
-offsetV2 = (gameWithOffsetHeight % gridRows) - offsetV1 # and right
 
-# offsetH = 0
-# offsetV = 0
-
-gameWidth = gameWithOffsetWidth - (offsetH1 + offsetH2) # define game width that will be used for actual game
-gameHeight = gameWithOffsetHeight - (offsetV1 + offsetV2) # same for height
-
-blockSize = gameWidth / cols  # block size = max size of each element in game
-
-playerSpeed = gameWidth / 180 # how much pixels should player move
-
-maze = [ [ 1 if i == 0 or i == cols-1 or j == 0 or j == rows-1 else None for i in range(cols) ] for j in range(rows) ]
-# grid[0][0] = 1
+m = Maze(g.cols, g.rows, g.blockSize)
+m.generateMaze()
 
 print('\n'.join([''.join(['{!s:5}'.format(item) for item in row])
-                 for row in maze]))
+                 for row in m.levels[0]]))
 
 
 black = (0, 0, 0)
@@ -57,25 +38,25 @@ red = (255, 0, 0)
 lightGreen = (221, 255, 124)
 
 # gameDisplay = pygame.display.set_mode((gameFullWidth,gameHeight),pygame.FULLSCREEN)
-gameDisplay = pygame.display.set_mode((gameFullWidth, gameFullHeight))
+gameDisplay = pygame.display.set_mode((g.gameFullWidth, g.gameFullHeight))
 pygame.display.set_caption('Deep Maze!')
 clock = pygame.time.Clock()
 
-playerWidth = int(round(blockSize / 1.29 / 1.3))
-playerHeight = int(round(blockSize / 1.3))
+playerWidth = int(round(g.blockSize / 1.29 / 1.3))
+playerHeight = int(round(g.blockSize / 1.3))
 playerImg = pygame.transform.scale(
   pygame.image.load("sprites/main-pack/hero/idleA/hero_idleA_0000.png").subsurface(20, 21, 62, 80),
   (playerWidth, playerHeight))
 chestImg = pygame.transform.scale(pygame.image.load("sprites/treasure chest/chest1_128.png"),
-                                  (int(blockSize * .8), int(blockSize * .8)))  # w:100 h:110
-# chestImg = pygame.transform.scale(pygame.image.load("sprites/wk/loot05key.png"),(int(blockSize*1),int(blockSize*1))) # w:100 h:110
+                                  (int(g.blockSize * .8), int(g.blockSize * .8)))  # w:100 h:110
+# chestImg = pygame.transform.scale(pygame.image.load("sprites/wk/loot05key.png"),(int(g.blockSize*1),int(g.blockSize*1))) # w:100 h:110
 # floorBlockImg = pygame.image.load("sprites/main-pack/level/groundEarth_checkered.png")
 floorBlockImg = pygame.transform.scale(
   pygame.image.load("sprites/main-pack/level/groundEarth_checkered_7x10.png"),
-  (int(blockSize), int(blockSize*2)))
+  (int(g.blockSize), int(g.blockSize*2)))
 wallBlockImg = pygame.transform.scale(
   pygame.image.load("sprites/main-pack/level/wallBreakable_7x5+.png"),
-  (int(blockSize*1), int(blockSize*1.5)))
+  (int(g.blockSize*1), int(g.blockSize*1.5)))
 # bgImg = pygame.transform.scale(
 #     pygame.image.load("sprites/bg.jpg"),
 #     (gameWidth, gameHeight))
@@ -88,35 +69,37 @@ def showPlayer(x, y):
 def drawImage(image, x, y, centered=False):
   # Wall
   if image == wallBlockImg: 
-    y += (math.ceil(float(wallBlockImg.get_height()) / float(blockSize)) - (
-      float(wallBlockImg.get_height()) / float(blockSize))) * blockSize
+    y += (math.ceil(float(wallBlockImg.get_height()) / float(g.blockSize)) - (
+      float(wallBlockImg.get_height()) / float(g.blockSize))) * g.blockSize
 
   if not centered:
-    gameDisplay.blit(image, (x + offsetH1, y + offsetV1))
+    gameDisplay.blit(image, (x + g.offsetH1, y + g.offsetV1))
   else:
-    localOffsetX = abs((blockSize - image.get_width()) / 2)
-    localOffsetY = abs((blockSize - image.get_height()) / 2)
-    gameDisplay.blit(image, (x + localOffsetX + offsetH1, y + localOffsetY + offsetV1))
+    localOffsetX = abs((g.blockSize - image.get_width()) / 2)
+    localOffsetY = abs((g.blockSize - image.get_height()) / 2)
+    gameDisplay.blit(image, (x + localOffsetX + g.offsetH1, y + localOffsetY + g.offsetV1))
 
 
 def drawGrid():
-  for col in xrange(1, cols):
-    pygame.draw.line(gameDisplay, red, (col * blockSize + offsetH1, offsetV1), (col * blockSize + offsetH1, gameHeight), 1)
-  for row in xrange(1, gridRows):
-    pygame.draw.line(gameDisplay, red, (offsetH1, row * blockSize + offsetV1), (gameWidth, row * blockSize + offsetV1), 1)
+  for col in xrange(1, g.cols):
+    pygame.draw.line(gameDisplay, red, (col * g.blockSize + g.offsetH1, g.offsetV1), (col * g.blockSize + g.offsetH1,
+                                                                                      g.gameHeight), 1)
+  for row in xrange(1, g.gridRows):
+    pygame.draw.line(gameDisplay, red, (g.offsetH1, row * g.blockSize + g.offsetV1), (
+      g.gameWidth, row * g.blockSize + g.offsetV1), 1)
 
 
 def drawFloor():
-  for col in xrange(0, cols):
-    for row in xrange(1, rows+1):
-      gameDisplay.blit(floorBlockImg, (col * blockSize + offsetH1, row * blockSize + offsetV1))
+  for col in xrange(0, g.cols):
+    for row in xrange(1, g.rows + 1):
+      gameDisplay.blit(floorBlockImg, (col * g.blockSize + g.offsetH1, row * g.blockSize + g.offsetV1))
 
 
-def drawMaze():
-  for i in range(rows):
-    for j in range(cols):
-      if maze[i][j] == 1:
-        drawImage(wallBlockImg, j * blockSize, i * blockSize)
+def drawMaze(level):
+  for i in range(g.rows):
+    for j in range(g.cols):
+      if level[i][j] == 1:
+        drawImage(wallBlockImg, j * g.blockSize, i * g.blockSize)
 
 
 def text_objects(text, font):
@@ -127,7 +110,7 @@ def text_objects(text, font):
 def displayMessage(text):
   largeText = pygame.font.Font('freesansbold.ttf', 115)
   TextSurf, TextRect = text_objects(text, largeText)
-  TextRect.center = ((gameWidth / 2), (gameHeight / 2))
+  TextRect.center = ((g.gameWidth / 2), (g.gameHeight / 2))
   gameDisplay.blit(TextSurf, TextRect)
   pygame.display.update()
   time.sleep(2)
@@ -140,9 +123,9 @@ def end():
 
 def gameLoop():
   # variables
-  drawMaze()
-  playerX = (blockSize * 5 + offsetH1)
-  playerY = (blockSize * 3 + offsetV1)
+  # drawMaze(m.levels[0])
+  playerX = (g.blockSize * 5 + g.offsetH1)
+  playerY = (g.blockSize * 3 + g.offsetV1)
   dx = 0
   dy = 0
   gameExit = False
@@ -187,22 +170,21 @@ def gameLoop():
     gameDisplay.fill(lightGreen)
     drawFloor()
     showPlayer(playerX, playerY)
-    drawMaze()
+    drawMaze(m.levels[0])
     drawGrid()
-    # drawImage(wallBlockImg, 1 * blockSize, 4 * blockSize)
-    # drawImage(wallBlockImg, 1 * blockSize, math.ceil(5 * blockSize))
-    # drawImage(wallBlockImg, 2 * blockSize, math.ceil(4 * blockSize))
-    # drawImage(wallBlockImg, 2 * blockSize, math.ceil(5 * blockSize))
-    # drawImage(wallBlockImg, 2 * blockSize, math.ceil(6 * blockSize))
-    # drawImage(wallBlockImg, 3 * blockSize, math.ceil(5 * blockSize))
-    # drawImage(chestImg, 1 * blockSize, 1 * blockSize, True)
+    # drawImage(wallBlockImg, 1 * g.blockSize, 4 * g.blockSize)
+    # drawImage(wallBlockImg, 1 * g.blockSize, math.ceil(5 * g.blockSize))
+    # drawImage(wallBlockImg, 2 * g.blockSize, math.ceil(4 * g.blockSize))
+    # drawImage(wallBlockImg, 2 * g.blockSize, math.ceil(5 * g.blockSize))
+    # drawImage(wallBlockImg, 2 * g.blockSize, math.ceil(6 * g.blockSize))
+    # drawImage(wallBlockImg, 3 * g.blockSize, math.ceil(5 * g.blockSize))
+    # drawImage(chestImg, 1 * g.blockSize, 1 * g.blockSize, True)
     # sidebar
-    pygame.draw.rect(gameDisplay, black, pygame.Rect(gameWidth + offsetH1 + offsetH2, 0, sidebarWidth, gameFullHeight), 0)
+    pygame.draw.rect(gameDisplay, black, pygame.Rect(g.gameWidth + g.offsetH1 + g.offsetH2, 0, g.sidebarWidth, g.gameFullHeight), 0)
     pygame.display.update()  # update specific thing if specified or whole screen
     clock.tick(60)
 
 
 gameLoop()
 # quit
-pygame.quit()
 quit()
