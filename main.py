@@ -3,9 +3,15 @@ Script for main game logic
 """
 
 # imports, init
-import pygame
-import time
-import math
+
+globals()["pygame"] = __import__("pygame")
+globals()["time"] = __import__("time")
+globals()["math"] = __import__("math")
+globals()["atexit"] = __import__("atexit")
+# import pygame
+# import time
+# import math
+import random
 import gameVariables as g
 from maze import Maze
 

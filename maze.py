@@ -8,6 +8,7 @@ class Maze:
     self.rows = rows
     self.size = size
     self.gridRows = rows+2
+    random.seed(int(time.time()))
 
   def generateMaze(self,level = 0): #complexity level
     self.levels.append(
