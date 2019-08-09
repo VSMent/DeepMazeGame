@@ -11,7 +11,7 @@ offsetV1 = None
 gameWidth = None
 gameHeight = None
 blockSize = None
-
+MOVEEVENT = None
 
 def init():
   # in case stuff is not imported
@@ -22,7 +22,10 @@ def init():
 
   pygame.init() # initialize pygame engine
 
-  global  gameFullWidth, gameFullHeight, sidebarWidth, cols, rows, gridRows, offsetH1, offsetH2, offsetV1, offsetV2, gameWidth, gameHeight, blockSize
+  global gameFullWidth, gameFullHeight, sidebarWidth, gameWidth, gameHeight, blockSize
+  global cols, rows, gridRows
+  global offsetH1, offsetH2, offsetV1, offsetV2
+  global MOVEEVENT
 
   # Get real screen resolution
   screenInfo = pygame.display.Info()  # get current screen info
@@ -50,6 +53,9 @@ def init():
 
   # One cell size
   blockSize = int(gameWidth / cols)  # block size = max size of each element in game
+
+  MOVEEVENT = pygame.USEREVENT + 1
+  pygame.time.set_timer(MOVEEVENT, 500)
 
 
 def imp():

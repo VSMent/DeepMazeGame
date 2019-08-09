@@ -24,7 +24,6 @@ except NameError:
 
 playerSpeed = g.gameWidth / 180 # how much pixels should player move
 
-
 m = Maze(g.cols, g.rows, g.blockSize)
 m.generateMaze()
 
@@ -129,6 +128,7 @@ def gameLoop():
   dx = 0
   dy = 0
   gameExit = False
+  canMove = False
   # main loop
   while not gameExit:
     for event in pygame.event.get():
@@ -136,15 +136,27 @@ def gameLoop():
       if event.type == pygame.QUIT:
         quit()
 
-      if event.type == pygame.KEYDOWN:
-        if event.key == pygame.K_LEFT:
+      keys = pygame.key.get_pressed()
+      # move player
+      if event.type == g.MOVEEVENT:
+        canMove = True
+
+      if canMove:
+        # X axis
+        if keys[pygame.K_LEFT]:
           playerX += -g.blockSize
-        if event.key == pygame.K_RIGHT:
+          canMove = False
+        if keys[pygame.K_RIGHT]:
           playerX += g.blockSize
-        if event.key == pygame.K_UP:
+          canMove = False
+
+        # Y axis
+        if keys[pygame.K_UP]:
           playerY += -g.blockSize
-        if event.key == pygame.K_DOWN:
+          canMove = False
+        if keys[pygame.K_DOWN]:
           playerY += g.blockSize
+          canMove = False
 
 
     # gameDisplay.fill(white)
