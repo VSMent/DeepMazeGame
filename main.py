@@ -4,13 +4,13 @@ Script for main game logic
 
 # imports, init
 
-globals()["pygame"] = __import__("pygame")
-globals()["time"] = __import__("time")
-globals()["math"] = __import__("math")
-globals()["atexit"] = __import__("atexit")
-# import pygame
-# import time
-# import math
+# globals()["pygame"] = __import__("pygame")
+# globals()["time"] = __import__("time")
+# globals()["math"] = __import__("math")
+# globals()["atexit"] = __import__("atexit")
+import pygame
+import time
+import math
 import random
 import gameVariables as g
 from maze import Maze
@@ -87,8 +87,7 @@ def drawImage(image, x, y, centered=False):
 
 def drawGrid():
   for col in xrange(1, g.cols):
-    pygame.draw.line(gameDisplay, red, (col * g.blockSize + g.offsetH1, g.offsetV1), (col * g.blockSize + g.offsetH1,
-                                                                                      g.gameHeight), 1)
+    pygame.draw.line(gameDisplay, red, (col * g.blockSize + g.offsetH1, g.offsetV1), (col * g.blockSize + g.offsetH1, g.gameHeight), 1)
   for row in xrange(1, g.gridRows):
     pygame.draw.line(gameDisplay, red, (g.offsetH1, row * g.blockSize + g.offsetV1), (
       g.gameWidth, row * g.blockSize + g.offsetV1), 1)
@@ -100,11 +99,13 @@ def drawFloor():
       gameDisplay.blit(floorBlockImg, (col * g.blockSize + g.offsetH1, row * g.blockSize + g.offsetV1))
 
 
-def drawMaze(level):
+def drawMaze(level,playerX,playerY):
   for i in range(g.rows):
     for j in range(g.cols):
       if level[i][j] == 1:
         drawImage(wallBlockImg, j * g.blockSize, i * g.blockSize)
+      if level[i][j] == 2:
+        showPlayer(j * g.blockSize,i * g.blockSize)
 
 
 def text_objects(text, font):
@@ -129,8 +130,8 @@ def end():
 def gameLoop():
   # variables
   # drawMaze(m.levels[0])
-  playerX = (g.blockSize * 5 + g.offsetH1)
-  playerY = (g.blockSize * 3 + g.offsetV1)
+  # playerX = (g.blockSize * 5 + g.offsetH1)
+  # playerY = (g.blockSize * 3 + g.offsetV1)
   dx = 0
   dy = 0
   gameExit = False
@@ -172,8 +173,8 @@ def gameLoop():
     #   end()
     gameDisplay.fill(lightGreen)
     drawFloor()
-    showPlayer(playerX, playerY)
-    drawMaze(m.levels[0])
+    # showPlayer(playerX, playerY)
+    drawMaze(m.levels[0], palyerX, palyerY)
     drawGrid()
     # drawImage(wallBlockImg, 1 * g.blockSize, 4 * g.blockSize)
     # drawImage(wallBlockImg, 1 * g.blockSize, math.ceil(5 * g.blockSize))
