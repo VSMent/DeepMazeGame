@@ -38,7 +38,7 @@ def init():
 
   # Set maze grid
   cols = 12 # divide all our 12/16 parts of our game screen for columns
-  rows = 7  # vertical resolution is 9 but we need to reserve two layers for bootom and top layer
+  rows = 7  # vertical resolution is 9 but we need to reserve two layers for bootom and top empty layers
   gridRows = rows + 2  # grid should be drawn for those rows too
 
   # Not 16x9 screen fix
