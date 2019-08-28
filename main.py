@@ -68,9 +68,6 @@ wallBlockImg = pygame.transform.scale(
 
 
 # code
-def showPlayer(x, y):
-  drawImage(playerImg,x,y,True)
-
 def drawImage(image, x, y, centered=False):
   # Wall
   if image == wallBlockImg: 
@@ -106,11 +103,51 @@ def drawMaze(level,playerRow,playerCol):
   for row in xrange(g.rows):
     for col in xrange(g.cols):
       # FG wall
-      if level[row][col] // 10 ** m.patternFgDigit % 10 == m.patternFgWall:
+      if getNthDigit(level[row][col],m.patternFgDigit) == m.patternFgWall:
         drawImage(wallBlockImg, col * g.blockSize, row * g.blockSize)
       # FG player
-      if level[row][col] // 10 ** m.patternFgDigit % 10 == m.patternFgPlayer:
-        showPlayer((playerCol) * g.blockSize,(playerRow+1) * g.blockSize)
+      if getNthDigit(level[row][col],m.patternFgDigit) == m.patternFgPlayer:
+        drawImage(playerImg, (playerCol) * g.blockSize,(playerRow+1) * g.blockSize, True)
+
+
+def getNthDigit(number, n):
+  return number // 10 ** n % 10
+
+
+def movePlayer(keys, playerRow, playerCol):
+  # X axis
+  if keys[pygame.K_LEFT] and getNthDigit(m.levels[0][playerRow][playerCol-1],m.patternFgDigit) != m.patternFgWall:
+    # playerRow += -g.blockSize
+    m.levels[0][playerRow][playerCol]-=m.patternFgPlayer
+    playerCol -= 1
+    m.levels[0][playerRow][playerCol]+=m.patternFgPlayer
+    m.showMazeMap()
+    # print("Row: "+str(playerRow),"Col: "+str(playerCol))
+    return False, playerRow, playerCol
+  if keys[pygame.K_RIGHT] and getNthDigit(m.levels[0][playerRow][playerCol+1],m.patternFgDigit) != m.patternFgWall:
+    m.levels[0][playerRow][playerCol]-=m.patternFgPlayer
+    playerCol += 1
+    m.levels[0][playerRow][playerCol]+=m.patternFgPlayer
+    m.showMazeMap()
+    # print("Row: "+str(playerRow),"Col: "+str(playerCol))
+    return False, playerRow, playerCol
+
+  # Y axis
+  if keys[pygame.K_UP] and getNthDigit(m.levels[0][playerRow-1][playerCol],m.patternFgDigit) != m.patternFgWall:
+    m.levels[0][playerRow][playerCol]-=m.patternFgPlayer
+    playerRow -= 1
+    m.levels[0][playerRow][playerCol]+=m.patternFgPlayer
+    m.showMazeMap()
+    # print("Row: "+str(playerRow),"Col: "+str(playerCol))
+    return False, playerRow, playerCol
+  if keys[pygame.K_DOWN] and getNthDigit(m.levels[0][playerRow+1][playerCol],m.patternFgDigit) != m.patternFgWall:
+    m.levels[0][playerRow][playerCol]-=m.patternFgPlayer
+    playerRow += 1
+    m.levels[0][playerRow][playerCol]+=m.patternFgPlayer
+    m.showMazeMap()
+    # print("Row: "+str(playerRow),"Col: "+str(playerCol))
+    return False, playerRow, playerCol
+  return True, playerRow, playerCol
 
 
 def text_objects(text, font):
@@ -154,39 +191,8 @@ def gameLoop():
         canMove = True
 
       if canMove:
-        # X axis
-        if keys[pygame.K_LEFT]:
-          # playerRow += -g.blockSize
-          m.levels[0][playerRow][playerCol]-=m.patternFgPlayer
-          playerCol -= 1
-          m.levels[0][playerRow][playerCol]+=m.patternFgPlayer
-          m.showMazeMap()
-          # print("Row: "+str(playerRow),"Col: "+str(playerCol))
-          canMove = False
-        if keys[pygame.K_RIGHT]:
-          m.levels[0][playerRow][playerCol]-=m.patternFgPlayer
-          playerCol += 1
-          m.levels[0][playerRow][playerCol]+=m.patternFgPlayer
-          m.showMazeMap()
-          # print("Row: "+str(playerRow),"Col: "+str(playerCol))
-          canMove = False
-
-        # Y axis
-        if keys[pygame.K_UP]:
-          m.levels[0][playerRow][playerCol]-=m.patternFgPlayer
-          playerRow -= 1
-          m.levels[0][playerRow][playerCol]+=m.patternFgPlayer
-          m.showMazeMap()
-          # print("Row: "+str(playerRow),"Col: "+str(playerCol))
-          canMove = False
-        if keys[pygame.K_DOWN]:
-          m.levels[0][playerRow][playerCol]-=m.patternFgPlayer
-          playerRow += 1
-          m.levels[0][playerRow][playerCol]+=m.patternFgPlayer
-          m.showMazeMap()
-          # print("Row: "+str(playerRow),"Col: "+str(playerCol))
-          canMove = False
-
+        canMove, playerRow, playerCol = movePlayer(keys,playerRow,playerCol)
+        
 
     # gameDisplay.fill(white)
     # if playerRow < offsetH1 or playerRow > gameWidth - playerWidth:
