@@ -33,7 +33,7 @@ playerSpeed = g.gameWidth / 180 # how much pixels should player move
 m = Maze(g.cols, g.rows, g.blockSize)
 m.generateMaze()
 
-print('\n'.join([''.join(['{!s:5}'.format(item) for item in row])
+print('\n'.join([''.join(['{!s:3}'.format(item) for item in row])
                  for row in m.levels[0]]))
 
 
@@ -93,19 +93,24 @@ def drawGrid():
       g.gameWidth, row * g.blockSize + g.offsetV1), 1)
 
 
-def drawFloor():
-  for col in xrange(0, g.cols):
-    for row in xrange(1, g.rows + 1):
-      gameDisplay.blit(floorBlockImg, (col * g.blockSize + g.offsetH1, row * g.blockSize + g.offsetV1))
+def drawFloor(level):
+  for row in xrange(1, g.rows+1):
+    for col in xrange(0, g.cols):
+      # print(row,col)
+      # if level[row][col] // 10 ** m.patternBgDigit % 10 == m.patternBgGrass:
+      drawImage(floorBlockImg, col * g.blockSize, row * g.blockSize)
 
 
 def drawMaze(level,playerRow,playerCol):
-  for i in range(g.rows):
-    for j in range(g.cols):
-      if level[i][j] == 1:
-        drawImage(wallBlockImg, j * g.blockSize, i * g.blockSize)
-      if level[i][j] == 2:
-        showPlayer(playerCol * g.blockSize,playerRow * g.blockSize)
+  drawFloor(level)
+  for row in xrange(g.rows):
+    for col in xrange(g.cols):
+      # FG wall
+      if level[row][col] // 10 ** m.patternFgDigit % 10 == m.patternFgWall:
+        drawImage(wallBlockImg, col * g.blockSize, row * g.blockSize)
+      # FG player
+      if level[row][col] // 10 ** m.patternFgDigit % 10 == m.patternFgPlayer:
+        showPlayer((playerCol) * g.blockSize,(playerRow+1) * g.blockSize)
 
 
 def text_objects(text, font):
@@ -152,22 +157,34 @@ def gameLoop():
         # X axis
         if keys[pygame.K_LEFT]:
           # playerRow += -g.blockSize
+          m.levels[0][playerRow][playerCol]-=m.patternFgPlayer
           playerCol -= 1
-          print("Row: "+str(playerRow),"Col: "+str(playerCol))
+          m.levels[0][playerRow][playerCol]+=m.patternFgPlayer
+          m.showMazeMap()
+          # print("Row: "+str(playerRow),"Col: "+str(playerCol))
           canMove = False
         if keys[pygame.K_RIGHT]:
+          m.levels[0][playerRow][playerCol]-=m.patternFgPlayer
           playerCol += 1
-          print("Row: "+str(playerRow),"Col: "+str(playerCol))
+          m.levels[0][playerRow][playerCol]+=m.patternFgPlayer
+          m.showMazeMap()
+          # print("Row: "+str(playerRow),"Col: "+str(playerCol))
           canMove = False
 
         # Y axis
         if keys[pygame.K_UP]:
+          m.levels[0][playerRow][playerCol]-=m.patternFgPlayer
           playerRow -= 1
-          print("Row: "+str(playerRow),"Col: "+str(playerCol))
+          m.levels[0][playerRow][playerCol]+=m.patternFgPlayer
+          m.showMazeMap()
+          # print("Row: "+str(playerRow),"Col: "+str(playerCol))
           canMove = False
         if keys[pygame.K_DOWN]:
+          m.levels[0][playerRow][playerCol]-=m.patternFgPlayer
           playerRow += 1
-          print("Row: "+str(playerRow),"Col: "+str(playerCol))
+          m.levels[0][playerRow][playerCol]+=m.patternFgPlayer
+          m.showMazeMap()
+          # print("Row: "+str(playerRow),"Col: "+str(playerCol))
           canMove = False
 
 
@@ -177,7 +194,7 @@ def gameLoop():
     # if playerCol < offsetV1 or playerCol > gameHeight - playerHeight:
     #   end()
     gameDisplay.fill(lightGreen)
-    drawFloor()
+    # drawFloor()
     # showPlayer(playerRow, playerCol)
     drawMaze(m.levels[0], playerRow, playerCol)
     drawGrid()
