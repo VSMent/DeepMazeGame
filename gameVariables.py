@@ -31,8 +31,7 @@ def init():
     # Get real screen resolution
     screenInfo = pygame.display.Info()  # get current screen info
     realScreenWidth = screenInfo.current_w  # get width
-    # gameFullWidth = realScreenWidth - 160  # make some offset from screen borders
-    gameFullWidth = 1200  # make some offset from screen borders
+    gameFullWidth = realScreenWidth - 160  # make some offset from screen borders
     gameFullHeight = gameWithOffsetHeight = int(
         round(gameFullWidth * 9 / 16))  # height with some small offsets if screen is not 16*9 resolution
     sidebarWidth = int(round(gameFullWidth * .25))  # take 25% (16 * .25 = 4) of game screen for sidebar

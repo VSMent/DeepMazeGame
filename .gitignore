@@ -109,6 +109,9 @@ venv.bak/
 /sprites/wk
 /sprites/nature_tileset_without_gaps
 
+# folders
+/backup
+
 # system files
 .DS_Store
 Thumbs.db
