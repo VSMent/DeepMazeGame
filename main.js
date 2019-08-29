@@ -187,7 +187,7 @@ var find = function () {
     path.push(newPath);
   }
   if ((end.x === chosen.x && end.y === chosen.y)){
-    // setTimeout(generateMaze, 1000);
+    // setTimeout(generate_maze, 1000);
   } else {
     requestAnimationFrame(find);
   }

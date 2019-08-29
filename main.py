@@ -69,7 +69,7 @@ exitBlockImg = pygame.transform.scale(
 
 
 # code
-def drawImage(image, x, y, centered=False):
+def draw_image(image, x, y, centered=False):
     # Wall
     if image == wallBlockImg:
         y += (math.ceil(float(wallBlockImg.get_height()) / float(g.blockSize)) - (
@@ -83,7 +83,7 @@ def drawImage(image, x, y, centered=False):
         gameDisplay.blit(image, (x + localOffsetX + g.offsetH1, y + localOffsetY + g.offsetV1))
 
 
-def drawGrid():
+def draw_grid():
     for col in xrange(1, g.cols):
         pygame.draw.line(gameDisplay, red, (col * g.blockSize + g.offsetH1, g.offsetV1),
                          (col * g.blockSize + g.offsetH1, g.gameHeight), 1)
@@ -92,76 +92,76 @@ def drawGrid():
             g.gameWidth, row * g.blockSize + g.offsetV1), 1)
 
 
-def drawFloor(level):
+def draw_floor(level):
     for row in xrange(1, g.rows + 1):
         for col in xrange(0, g.cols):
             # print(row,col)
             # if level[row][col] // 10 ** m.patternBgDigit % 10 == m.patternBgGrass:
-            drawImage(floorBlockImg, col * g.blockSize, row * g.blockSize)
+            draw_image(floorBlockImg, col * g.blockSize, row * g.blockSize)
 
 
-def drawMaze(level, playerRow, playerCol):
-    drawFloor(level)
+def draw_maze(level, playerRow, playerCol):
+    draw_floor(level)
     for row in xrange(g.rows):
         for col in xrange(g.cols):
             # FG wall
-            if getNthDigit(level[row][col], m.patternFgDigit) == m.patternFgWall:
-                drawImage(wallBlockImg, col * g.blockSize, row * g.blockSize)
+            if get_nth_digit(level[row][col], m.patternFgDigit) == m.patternFgWall:
+                draw_image(wallBlockImg, col * g.blockSize, row * g.blockSize)
             # MG exit
-            if getNthDigit(level[row][col], m.patternMgDigit) == m.patternMgExit:
-                drawImage(exitBlockImg, col * g.blockSize, (row + 1) * g.blockSize, True)
+            if get_nth_digit(level[row][col], m.patternMgDigit) == m.patternMgExit:
+                draw_image(exitBlockImg, col * g.blockSize, (row + 1) * g.blockSize, True)
             # FG player
-            if getNthDigit(level[row][col], m.patternFgDigit) == m.patternFgPlayer:
-                drawImage(playerImg, playerCol * g.blockSize, (playerRow + 1) * g.blockSize, True)
-    checkExit(level, playerRow, playerCol)
+            if get_nth_digit(level[row][col], m.patternFgDigit) == m.patternFgPlayer:
+                draw_image(playerImg, playerCol * g.blockSize, (playerRow + 1) * g.blockSize, True)
+    check_exit(level, playerRow, playerCol)
 
-def checkExit(level, playerRow, playerCol):
-    if getNthDigit(level[playerRow][playerCol], m.patternMgDigit) == m.patternMgExit:
+def check_exit(level, playerRow, playerCol):
+    if get_nth_digit(level[playerRow][playerCol], m.patternMgDigit) == m.patternMgExit:
         # m.goToNextLevel = True
-        displayMessage("Level complete!")
+        display_message("Level complete!")
         m.currentLevel += 1
-        gameLoop()
+        game_loop()
 
 
-def getNthDigit(number, n):
+def get_nth_digit(number, n):
     return number // 10 ** n % 10
 
 
-def movePlayer(keys, playerRow, playerCol):
+def move_player(keys, playerRow, playerCol):
     # X axis
-    if keys[pygame.K_LEFT] and getNthDigit(m.levels[m.currentLevel][playerRow][playerCol - 1],
-                                           m.patternMgDigit) in m.walkableFgObjects:
+    if keys[pygame.K_LEFT] and get_nth_digit(m.levels[m.currentLevel][playerRow][playerCol - 1],
+                                             m.patternMgDigit) in m.walkableFgObjects:
         # playerRow += -g.blockSize
         m.levels[m.currentLevel][playerRow][playerCol] -= m.patternFgPlayer * 10 ** m.patternFgDigit
         playerCol -= 1
         m.levels[m.currentLevel][playerRow][playerCol] += m.patternFgPlayer * 10 ** m.patternFgDigit
-        m.showMazeLevel(m.currentLevel)
+        m.show_maze_level(m.currentLevel)
         # print("Row: "+str(playerRow),"Col: "+str(playerCol))
         return False, playerRow, playerCol
-    if keys[pygame.K_RIGHT] and getNthDigit(m.levels[m.currentLevel][playerRow][playerCol + 1],
-                                            m.patternMgDigit) in m.walkableFgObjects:
+    if keys[pygame.K_RIGHT] and get_nth_digit(m.levels[m.currentLevel][playerRow][playerCol + 1],
+                                              m.patternMgDigit) in m.walkableFgObjects:
         m.levels[m.currentLevel][playerRow][playerCol] -= m.patternFgPlayer * 10 ** m.patternFgDigit
         playerCol += 1
         m.levels[m.currentLevel][playerRow][playerCol] += m.patternFgPlayer * 10 ** m.patternFgDigit
-        m.showMazeLevel(m.currentLevel)
+        m.show_maze_level(m.currentLevel)
         # print("Row: "+str(playerRow),"Col: "+str(playerCol))
         return False, playerRow, playerCol
 
     # Y axis
-    if keys[pygame.K_UP] and getNthDigit(m.levels[m.currentLevel][playerRow - 1][playerCol],
-                                         m.patternMgDigit) in m.walkableFgObjects:
+    if keys[pygame.K_UP] and get_nth_digit(m.levels[m.currentLevel][playerRow - 1][playerCol],
+                                           m.patternMgDigit) in m.walkableFgObjects:
         m.levels[m.currentLevel][playerRow][playerCol] -= m.patternFgPlayer * 10 ** m.patternFgDigit
         playerRow -= 1
         m.levels[m.currentLevel][playerRow][playerCol] += m.patternFgPlayer * 10 ** m.patternFgDigit
-        m.showMazeLevel(m.currentLevel)
+        m.show_maze_level(m.currentLevel)
         # print("Row: "+str(playerRow),"Col: "+str(playerCol))
         return False, playerRow, playerCol
-    if keys[pygame.K_DOWN] and getNthDigit(m.levels[m.currentLevel][playerRow + 1][playerCol],
-                                           m.patternMgDigit) in m.walkableFgObjects:
+    if keys[pygame.K_DOWN] and get_nth_digit(m.levels[m.currentLevel][playerRow + 1][playerCol],
+                                             m.patternMgDigit) in m.walkableFgObjects:
         m.levels[m.currentLevel][playerRow][playerCol] -= m.patternFgPlayer * 10 ** m.patternFgDigit
         playerRow += 1
         m.levels[m.currentLevel][playerRow][playerCol] += m.patternFgPlayer * 10 ** m.patternFgDigit
-        m.showMazeLevel(m.currentLevel)
+        m.show_maze_level(m.currentLevel)
         # print("Row: "+str(playerRow),"Col: "+str(playerCol))
         return False, playerRow, playerCol
 
@@ -173,7 +173,7 @@ def text_objects(text, font):
     return textSurface, textSurface.get_rect()
 
 
-def displayMessage(text):
+def display_message(text):
     largeText = pygame.font.Font('freesansbold.ttf', 115)
     TextSurf, TextRect = text_objects(text, largeText)
     TextRect.center = ((g.gameWidth / 2), (g.gameHeight / 2))
@@ -183,14 +183,14 @@ def displayMessage(text):
 
 
 def end():
-    displayMessage('The end!')
+    display_message('The end!')
 
 
-def gameLoop():
-    m.generateMaze(g.rows, g.cols, m.currentLevel)
-    m.showMazeLevel(m.currentLevel)
+def game_loop():
+    m.generate_maze(g.rows, g.cols, m.currentLevel)
+    m.show_maze_level(m.currentLevel)
     # variables
-    # drawMaze(m.levels[m.currentLevel])
+    # draw_maze(m.levels[m.currentLevel])
     playerRow = m.initialPlayerPos[0]
     playerCol = m.initialPlayerPos[1]
     dx = 0
@@ -210,7 +210,7 @@ def gameLoop():
                 canMove = True
 
             if canMove:
-                canMove, playerRow, playerCol = movePlayer(keys, playerRow, playerCol)
+                canMove, playerRow, playerCol = move_player(keys, playerRow, playerCol)
 
         # gameDisplay.fill(white)
         # if playerRow < offsetH1 or playerRow > gameWidth - playerWidth:
@@ -218,24 +218,24 @@ def gameLoop():
         # if playerCol < offsetV1 or playerCol > gameHeight - playerHeight:
         #   end()
         gameDisplay.fill(lightGreen)
-        # drawFloor()
+        # draw_floor()
         # showPlayer(playerRow, playerCol)
         # sidebar
         pygame.draw.rect(gameDisplay, black,
                          pygame.Rect(g.gameWidth + g.offsetH1 + g.offsetH2, 0, g.sidebarWidth, g.gameFullHeight), 0)
-        drawMaze(m.levels[m.currentLevel], playerRow, playerCol)
-        # drawGrid()
-        # drawImage(wallBlockImg, 1 * g.blockSize, 4 * g.blockSize)
-        # drawImage(wallBlockImg, 1 * g.blockSize, math.ceil(5 * g.blockSize))
-        # drawImage(wallBlockImg, 2 * g.blockSize, math.ceil(4 * g.blockSize))
-        # drawImage(wallBlockImg, 2 * g.blockSize, math.ceil(5 * g.blockSize))
-        # drawImage(wallBlockImg, 2 * g.blockSize, math.ceil(6 * g.blockSize))
-        # drawImage(wallBlockImg, 3 * g.blockSize, math.ceil(5 * g.blockSize))
-        # drawImage(chestImg, 1 * g.blockSize, 1 * g.blockSize, True)
+        draw_maze(m.levels[m.currentLevel], playerRow, playerCol)
+        # draw_grid()
+        # draw_image(wallBlockImg, 1 * g.blockSize, 4 * g.blockSize)
+        # draw_image(wallBlockImg, 1 * g.blockSize, math.ceil(5 * g.blockSize))
+        # draw_image(wallBlockImg, 2 * g.blockSize, math.ceil(4 * g.blockSize))
+        # draw_image(wallBlockImg, 2 * g.blockSize, math.ceil(5 * g.blockSize))
+        # draw_image(wallBlockImg, 2 * g.blockSize, math.ceil(6 * g.blockSize))
+        # draw_image(wallBlockImg, 3 * g.blockSize, math.ceil(5 * g.blockSize))
+        # draw_image(chestImg, 1 * g.blockSize, 1 * g.blockSize, True)
         pygame.display.update()  # update specific thing if specified or whole screen
         clock.tick(60)
 
 
-gameLoop()
+game_loop()
 # quit
 quit()

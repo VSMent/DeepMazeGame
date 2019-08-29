@@ -37,7 +37,7 @@ class Maze:
         self.walkableFgObjects = (self.patternMgVoid, self.patternMgExit)
         random.seed(int(time.time()))
 
-    def generateMaze(self, rows, cols, level=0):  # complexity level
+    def generate_maze(self, rows, cols, level=0):  # complexity level
         self.rows = rows
         self.cols = cols
         self.levels.append(
@@ -54,7 +54,7 @@ class Maze:
         self.exitPoint = (random.randrange(1, self.rows - 1, 1), random.randrange(1, self.cols - 1, 1))
         while self.exitPoint == self.initialPlayerPos or abs(self.exitPoint[0]-self.initialPlayerPos[0]) < 2 or abs(self.exitPoint[1]-self.initialPlayerPos[1]) < 2:
             self.exitPoint = (random.randrange(1, self.rows - 1, 1), random.randrange(1, self.cols - 1, 1))
-        self.levels[level][self.exitPoint[0]][self.exitPoint[1]] = self.patternMgExit * 10 ** (self.patternMgDigit)
+        self.levels[level][self.exitPoint[0]][self.exitPoint[1]] = self.patternMgExit * 10 ** self.patternMgDigit
 
     # 1  1  1  1  1  1  1  1  1  1  1  1
     # 1  10 10 10 10 10 10 10 10 10 10 1
@@ -64,14 +64,13 @@ class Maze:
     # 1  10 10 10 10 10 10 10 10 10 10 1
     # 1  1  1  1  1  1  1  1  1  1  1  1
 
-    def showMazeLevel(self, level=0):
+    def show_maze_level(self, level=0):
         print("\nL: {}".format(level))
         print('\n'.join([''.join(['{!s:5}'.format(item) for item in row])
-                                for row in self.levels[level]]))
+                        for row in self.levels[level]]))
 
-
-    def showAllMazeLevels(self):
+    def show_all_maze_levels(self):
         i = 0
         while i < len(self.levels):
-            self.showMazeLevel(i)
+            self.show_maze_level(i)
             i += 1
