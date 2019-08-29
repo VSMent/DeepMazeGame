@@ -32,9 +32,7 @@ playerSpeed = g.gameWidth / 180 # how much pixels should player move
 
 m = Maze(g.cols, g.rows, g.blockSize)
 m.generateMaze()
-
-print('\n'.join([''.join(['{!s:3}'.format(item) for item in row])
-                 for row in m.levels[0]]))
+m.showMazeMap()
 
 
 black = (0, 0, 0)
@@ -62,6 +60,9 @@ floorBlockImg = pygame.transform.scale(
 wallBlockImg = pygame.transform.scale(
   pygame.image.load("sprites/main-pack/level/wallBreakable_7x5+.png"),
   (int(g.blockSize*1), int(g.blockSize*1.5)))
+exitBlockImg = pygame.transform.scale(
+  pygame.image.load("sprites/main-pack/level/groundExitDown_7x5.png"),
+  (int(g.blockSize*1), int(g.blockSize*1)))
 # bgImg = pygame.transform.scale(
 #     pygame.image.load("sprites/bg.jpg"),
 #     (gameWidth, gameHeight))
@@ -105,6 +106,9 @@ def drawMaze(level,playerRow,playerCol):
       # FG wall
       if getNthDigit(level[row][col],m.patternFgDigit) == m.patternFgWall:
         drawImage(wallBlockImg, col * g.blockSize, row * g.blockSize)
+      # MG exit
+      if getNthDigit(level[row][col],m.patternMgDigit) == m.patternMgExit:
+        drawImage(exitBlockImg, (col) * g.blockSize, (row+1) * g.blockSize, True)
       # FG player
       if getNthDigit(level[row][col],m.patternFgDigit) == m.patternFgPlayer:
         drawImage(playerImg, (playerCol) * g.blockSize,(playerRow+1) * g.blockSize, True)
@@ -116,34 +120,34 @@ def getNthDigit(number, n):
 
 def movePlayer(keys, playerRow, playerCol):
   # X axis
-  if keys[pygame.K_LEFT] and getNthDigit(m.levels[0][playerRow][playerCol-1],m.patternFgDigit) != m.patternFgWall:
+  if keys[pygame.K_LEFT] and getNthDigit(m.levels[0][playerRow][playerCol-1],m.patternMgDigit) in m.walkableFgObjects:
     # playerRow += -g.blockSize
-    m.levels[0][playerRow][playerCol]-=m.patternFgPlayer
+    m.levels[0][playerRow][playerCol]-=m.patternFgPlayer*10**(m.patternFgDigit)
     playerCol -= 1
-    m.levels[0][playerRow][playerCol]+=m.patternFgPlayer
+    m.levels[0][playerRow][playerCol]+=m.patternFgPlayer*10**(m.patternFgDigit)
     m.showMazeMap()
     # print("Row: "+str(playerRow),"Col: "+str(playerCol))
     return False, playerRow, playerCol
-  if keys[pygame.K_RIGHT] and getNthDigit(m.levels[0][playerRow][playerCol+1],m.patternFgDigit) != m.patternFgWall:
-    m.levels[0][playerRow][playerCol]-=m.patternFgPlayer
+  if keys[pygame.K_RIGHT] and getNthDigit(m.levels[0][playerRow][playerCol+1],m.patternMgDigit) in m.walkableFgObjects:
+    m.levels[0][playerRow][playerCol]-=m.patternFgPlayer*10**(m.patternFgDigit)
     playerCol += 1
-    m.levels[0][playerRow][playerCol]+=m.patternFgPlayer
+    m.levels[0][playerRow][playerCol]+=m.patternFgPlayer*10**(m.patternFgDigit)
     m.showMazeMap()
     # print("Row: "+str(playerRow),"Col: "+str(playerCol))
     return False, playerRow, playerCol
 
   # Y axis
-  if keys[pygame.K_UP] and getNthDigit(m.levels[0][playerRow-1][playerCol],m.patternFgDigit) != m.patternFgWall:
-    m.levels[0][playerRow][playerCol]-=m.patternFgPlayer
+  if keys[pygame.K_UP] and getNthDigit(m.levels[0][playerRow-1][playerCol],m.patternMgDigit) in m.walkableFgObjects:
+    m.levels[0][playerRow][playerCol]-=m.patternFgPlayer*10**(m.patternFgDigit)
     playerRow -= 1
-    m.levels[0][playerRow][playerCol]+=m.patternFgPlayer
+    m.levels[0][playerRow][playerCol]+=m.patternFgPlayer*10**(m.patternFgDigit)
     m.showMazeMap()
     # print("Row: "+str(playerRow),"Col: "+str(playerCol))
     return False, playerRow, playerCol
-  if keys[pygame.K_DOWN] and getNthDigit(m.levels[0][playerRow+1][playerCol],m.patternFgDigit) != m.patternFgWall:
-    m.levels[0][playerRow][playerCol]-=m.patternFgPlayer
+  if keys[pygame.K_DOWN] and getNthDigit(m.levels[0][playerRow+1][playerCol],m.patternMgDigit) in m.walkableFgObjects:
+    m.levels[0][playerRow][playerCol]-=m.patternFgPlayer*10**(m.patternFgDigit)
     playerRow += 1
-    m.levels[0][playerRow][playerCol]+=m.patternFgPlayer
+    m.levels[0][playerRow][playerCol]+=m.patternFgPlayer*10**(m.patternFgDigit)
     m.showMazeMap()
     # print("Row: "+str(playerRow),"Col: "+str(playerCol))
     return False, playerRow, playerCol
@@ -203,7 +207,7 @@ def gameLoop():
     # drawFloor()
     # showPlayer(playerRow, playerCol)
     drawMaze(m.levels[0], playerRow, playerCol)
-    drawGrid()
+    # drawGrid()
     # drawImage(wallBlockImg, 1 * g.blockSize, 4 * g.blockSize)
     # drawImage(wallBlockImg, 1 * g.blockSize, math.ceil(5 * g.blockSize))
     # drawImage(wallBlockImg, 2 * g.blockSize, math.ceil(4 * g.blockSize))
