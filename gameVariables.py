@@ -16,7 +16,7 @@ MOVEEVENT = None
 
 def init():
     # in case stuff is not imported
-    imp()
+    imp()  # import everything needed
 
     global atexit
     atexit.register(exit)  # register for game exit event
@@ -55,8 +55,8 @@ def init():
     # One cell size
     blockSize = int(gameWidth / cols)  # block size = max size of each element in game
 
-    MOVEEVENT = pygame.USEREVENT + 1
-    pygame.time.set_timer(MOVEEVENT, 500)
+    MOVEEVENT = pygame.USEREVENT + 1  # define custom pygame event
+    pygame.time.set_timer(MOVEEVENT, 500)  # set pygame timer for 0.5s, to fire event
 
 
 def imp():
